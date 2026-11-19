@@ -1,0 +1,142 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lab 4 prototype</title>
+
+<style>
+ body{font:16px/1.5 system-ui,Arial,sans-serif;margin:0;display:grid;grid-template-columns:1fr 320px;min-height:100vh}
+ main{padding:24px;border-right:1px solid #ddd} aside{padding:24px;background:#f5f7f8}
+ .turn{margin:8px 0;padding:10px 14px;border-radius:12px;background:#eef1f3;max-width:80%}
+ .me{background:#003b5c;color:#fff;margin-left:auto}
+ button{margin:4px 6px 0 0;padding:8px 12px;border:1px solid #00694e;background:#fff;border-radius:18px;cursor:pointer}
+ .card{padding:12px;border-radius:10px;background:#d6e8e2;margin-bottom:12px} .note{color:#4a4a4a;font-size:14px}
+ .warning{padding:12px;border-left:4px solid #a54100;background:#fff1e8;color:#5c2500}
+ input{width:100%;padding:10px;font:inherit;border:1px solid #bbb;border-radius:8px}
+ /* 下面是AmberLens 琥珀色不確定性高亮樣式 */
+.code-box {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  margin: 10px 0;
+}
+.safe-code { color: #9cdcfe; }
+.amber-highlight {
+  color: #f14c4c;
+  text-decoration: underline wavy #e5a50a;
+  font-weight: bold;
+}
+.badge-warning {
+  background: #e5a50a;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+ @media(max-width:700px){body{grid-template-columns:1fr}main{border-right:0;border-bottom:1px solid #ddd;padding:16px}aside{padding:16px}input{box-sizing:border-box}}
+</style>
+
+<main>
+  <h1>Lab 4 prototype</h1>
+  <div id="transcript"></div>
+  <p>
+    <button onclick="send('__poster__')">Test poster image</button>
+    <button onclick="send('__noticeboard__')">Test noticeboard image</button>
+    <button onclick="send('book a revision slot')">Propose revision slot</button>
+    <button onclick="simulateAmberLens()">Simulate AmberLens (Insecure SQL)</button>
+  </p>
+  <p><input id="msg" placeholder="Type a message and press Enter" autofocus></p>
+</main>
+<aside>
+  <h2>Result</h2>
+  <div id="card"><p class="note">Nothing yet.</p></div>
+</aside>
+<script>
+function simulateAmberLens() {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <strong>AmberLens: Code Autocomplete with Uncertainty Visualisation</strong>
+    <div class="code-box">
+      <span class="safe-code">def get_user_account(user_id):</span><br>
+      &nbsp;&nbsp;<span class="amber-highlight">cursor.execute(f"SELECT * FROM users WHERE id = '{user_id}'")</span>
+      <span class="badge-warning">⚠️ 61% confidence [CWE-89]</span>
+    </div>
+    <div class="warning" role="alert">
+      <strong>Vulnerability Alert (Amershi G11):</strong> Raw string concatenation detected in SQL statement. High risk of SQL Injection.
+      <br><strong>Recommendation:</strong> Use parameterized query binding <code>(?, (user_id,))</code>.
+    </div>
+    <p>
+      <button onclick="this.parentElement.innerHTML='<span style=\\'color:green;\\'>✅ Fixed: cursor.execute(&quot;SELECT * FROM users WHERE id = ?&quot;, (user_id,)) [Verified]</span>'">
+        Cycle Safe Alternative (Alt + [)
+      </button>
+    </p>
+  `;
+  document.getElementById('transcript').appendChild(card);
+}
+const t = document.getElementById('transcript'), card = document.getElementById('card');
+function say(text, me){ const d=document.createElement('div'); d.className='turn'+(me?' me':''); d.textContent=text; t.appendChild(d); }
+function render(data){                       // the fields, drawn — not the reply, printed
+//  card.innerHTML = '';
+//  if (data.action) { const c=document.createElement('div'); c.className='card';
+//    c.textContent = data.action.clinic + ' · ' + data.action.date + ' ' + (data.action.time||''); card.appendChild(c); }
+//  if (data.stale_warning) { const w=document.createElement('p'); w.className='warning';
+//    w.setAttribute('role','alert'); w.textContent=data.stale_warning; card.appendChild(w); }
+//  if (data.recovery_notice) { const w=document.createElement('p'); w.className='warning';
+//    w.setAttribute('role','alert'); w.textContent=data.recovery_notice; card.appendChild(w); }
+//  (data.options||[]).forEach(o => { const b=document.createElement('button'); b.textContent=o;
+//    b.onclick = () => send(o); card.appendChild(b); });
+//  const n=document.createElement('p'); n.className='note';
+//  n.textContent = (data.unsupported_claims||[]).length ? 'Not checked: ' + data.unsupported_claims.join(', ') : 'Nothing unsupported was claimed.';
+//  card.appendChild(n);
+if (data.reply && !data.tool_confirmation && !data.tool_result) {
+  const answer = document.createElement('p');
+  answer.textContent = data.reply;
+  card.appendChild(answer);
+} if (data.evidence && data.evidence.length) {
+  const e = document.createElement('div');
+  e.className = 'card';
+  e.innerHTML = '<strong>Evidence</strong>';
+  data.evidence.forEach(h => {
+    const p = document.createElement('p');
+    p.textContent = (h.superseded ? '[SUPERSEDED | ' : '[') + h.source + ' | ' + h.section +
+      ' | updated ' + h.date + ' | score ' + h.score + '] ' + h.text;
+    e.appendChild(p);
+  });
+  card.appendChild(e);
+} if (data.stale_warning) {
+  const warning = document.createElement('p');
+  warning.className = 'warning';
+  warning.setAttribute('role', 'alert');
+  warning.textContent = data.stale_warning;
+  card.appendChild(warning);
+} if (data.tool_confirmation) {
+  const p = document.createElement('p');
+  p.textContent = data.tool_confirmation;
+  card.appendChild(p);
+  const yes = document.createElement('button');
+  yes.textContent = 'Confirm';
+  yes.onclick = () => send('__confirm_tool__');
+  card.appendChild(yes);
+  const no = document.createElement('button');
+  no.textContent = 'Cancel';
+  no.onclick = () => send('__cancel_tool__');
+  card.appendChild(no);
+} if (data.tool_result) {
+  const result = document.createElement('p');
+  result.textContent = 'Tool result: ' + JSON.stringify(data.tool_result);
+  card.appendChild(result);
+}
+}
+async function send(text){
+  //say(text, true);
+  if (!text.startsWith('__')) say(text, true);
+  const r = await fetch('/', {method:'POST', body: JSON.stringify({message:text})});
+  const data = await r.json();
+  say(data.reply); render(data);
+}
+document.getElementById('msg').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.value.trim()) { const v=e.target.value; e.target.value=''; send(v); }
+});
+</script>
