@@ -29,10 +29,11 @@ AmberLens is an intelligent code-editor interface prototype designed to mitigate
 5. Click **"Simulate Insecure SQL Suggestion"** to inspect the amber underline and hoverable rationale card. Press `Alt + [` or click **"Cycle Safe Alternative"** to test recovery.
 
 ## 4. Development Record
-- `commit 3a1e20`: Initial baseline with context logging and ghost text generation.
-- `commit 5c84d1`: Added dual-state token CSS rendering (neutral grey vs. amber alert).
-- `commit 9b22e7`: Integrated CWE-89 evidence tooltips (Amershi et al., 2019 Guideline G11).
-- `commit 7f3b89`: Implemented keyboard shortcut recovery (`Alt+[` cycling, `Esc` dismiss; Guideline G9).
+Development is structured across four progressive milestones:
+- **Stage 1 (Baseline Architecture):** Adapted the lightweight Python web server from Lab 4 with request context inspection and user input handling.
+- **Stage 2 (Dual-State Visual Styling):** Implemented token-level CSS rendering for code completions (neutral grey ghost text for safe boilerplate vs. amber underlines for flagged tokens).
+- **Stage 3 (Interactive Explanations & Rationale):** Designed hoverable evidence cards explaining CWE-89 SQL injection risks, adhering to Amershi et al. (2019) Guideline G11.
+- **Stage 4 (Correction & Recovery Controls):** Integrated one-click alternative cycling (`Alt + [` shortcut and button controls) to support efficient correction (Guideline G9).
 
 ## 5. AI Assistance Statement
 Generative AI (Gemini / Claude) was used to:
