@@ -3,7 +3,7 @@
 
 **Prose Word Count:** 285 words  
 **Project Status:** Functional Prototype (Web-based Simulation)  
-**Submitted Commit:** `acbf894`
+**Target Release:** v1.0.0
 
 ## 1. Project Overview
 AmberLens is an intelligent code-editor interface prototype designed to mitigate developer over-reliance on vulnerable AI code suggestions. Rather than presenting suggestions with uniform fluency, it selectively highlights tokens with high uncertainty or security risk (e.g. CWE-89 SQL injection) using in-situ amber underlines and confidence badges.
@@ -29,11 +29,11 @@ AmberLens is an intelligent code-editor interface prototype designed to mitigate
 5. Click **"Simulate Insecure SQL Suggestion"** to inspect the amber underline and hoverable rationale card. Press `Alt + [` or click **"Cycle Safe Alternative"** to test recovery.
 
 ## 4. Development Record
-Development is structured across four progressive milestones:
-- **Stage 1 (Baseline Architecture):** Adapted the lightweight Python web server from Lab 4 with request context inspection and user input handling.
-- **Stage 2 (Dual-State Visual Styling):** Implemented token-level CSS rendering for code completions (neutral grey ghost text for safe boilerplate vs. amber underlines for flagged tokens).
-- **Stage 3 (Interactive Explanations & Rationale):** Designed hoverable evidence cards explaining CWE-89 SQL injection risks, adhering to Amershi et al. (2019) Guideline G11.
-- **Stage 4 (Correction & Recovery Controls):** Integrated one-click alternative cycling (`Alt + [` shortcut and button controls) to support efficient correction (Guideline G9).
+Development is documented through progressive commits in the repository:
+- `commit 562a168`: Initial repository initialization.
+- `commit aa2776e`: Baseline project structuring and documentation setup.
+- `commit 51328a3`: Core implementation upload (web UI, in-situ amber highlight styling, and simulation logic).
+- `commit acbf894`: Final README revision, test records integration, and submission release freeze.
 
 ## 5. AI Assistance Statement
 Generative AI (Gemini / Claude) was used to:
