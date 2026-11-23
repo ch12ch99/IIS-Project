@@ -3,7 +3,7 @@
 
 **Prose Word Count:** 285 words  
 **Project Status:** Functional Prototype (Web-based Simulation)  
-**Target Release:** `v1.0.0` (Commit `7f3b89a`)
+**Submitted Commit:** `acbf894`
 
 ## 1. Project Overview
 AmberLens is an intelligent code-editor interface prototype designed to mitigate developer over-reliance on vulnerable AI code suggestions. Rather than presenting suggestions with uniform fluency, it selectively highlights tokens with high uncertainty or security risk (e.g. CWE-89 SQL injection) using in-situ amber underlines and confidence badges.
